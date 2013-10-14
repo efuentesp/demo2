@@ -357,6 +357,11 @@ module.exports = function (grunt) {
         singleRun: true
       }
     },
+    simplemocha: {
+      backend: {
+        src: ['test/server/*.test.js']
+      }
+    },
     cdnify: {
       dist: {
         html: ['<%= yeoman.dist %>/*.html']
