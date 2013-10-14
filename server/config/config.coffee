@@ -7,10 +7,10 @@ module.exports = {
 		db: 'mongodb://localhost/peacemakers-dev'
 	}
 
-	testing: {
+	test: {
 		app: {
 			name: 'Peacemakers (test)'
 		},
-		db: 'mongodb://localhost/peacemakers-test'
+		db: 'mongodb://localhost/peacemakers-dev'
 	}
 }

@@ -3,78 +3,78 @@ School = mongoose.model('School')
 
 # GET all
 exports.list = (req, res) ->
-	console.log "GET: "
-	console.log req.query
+  console.log "GET: "
+  console.log req.query
 
-	return School.find()
-		.exec (err, schools) ->
-			if !err
-				return res.send schools
-			else
-				return console.log err
+  return School.find()
+    .exec (err, schools) ->
+      if not err
+        return res.send schools
+      else
+        return console.log err
 
 # GET one
 exports.show = (req, res) ->
-	console.log "GET: " + req.params.id
-	return School.findById req.params.id, (err, school) ->
-		if !err
-			if school
-				return res.send school
-			else
-				console.log "Resource not found!"
-				res.statusCode = 400
-				return res.send "Error 400: Resource not found!"
-		else
-			return console.log err	
+  console.log "GET: #{req.params.id}"
+  return School.findById req.params.id, (err, school) ->
+    if not err
+      if school
+        return res.send school
+      else
+        console.log "Resource not found!"
+        res.statusCode = 400
+        return res.send "Error 400: Resource not found!"
+    else
+      return console.log err  
 
 # POST one
 exports.create = (req, res) ->
-	console.log "POST: "
-	console.log req.body
-	school = new School req.body
-	school.save (err) ->
-		if !err
-			return console.log "created"
-		else
-			return console.log err
-	return res.send school
+  console.log "POST: "
+  console.log req.body
+  school = new School req.body
+  school.save (err) ->
+    if not err
+      return console.log "created"
+    else
+      return console.log err
+  return res.send school
 
 # PUT one
 exports.update = (req, res) ->
-	console.log "PUT: " + req.params.id
-	return School.findById req.params.id, (err, school) ->
-		if !err
-			if school
-				school.name = req.body.name
-				school.www = req.body.www
-				return school.save (err) ->
-					if !err
-						console.log "updated"
-					else
-						console.log err
-					return res.send school
-			else
-				console.log "Resource not found!"
-				res.statusCode = 400
-				return res.send "Error 400: Resource not found!"
-		else
-			return console.log err
+  console.log "PUT: #{req.params.id}"
+  return School.findById req.params.id, (err, school) ->
+    if not err
+      if school
+        school.name = req.body.name
+        school.www = req.body.www
+        return school.save (err) ->
+          if not err
+            console.log "updated"
+          else
+            console.log err
+          return res.send school
+      else
+        console.log "Resource not found!"
+        res.statusCode = 400
+        return res.send "Error 400: Resource not found!"
+    else
+      return console.log err
 
 # DELETE one
 exports.destroy = (req, res) ->
-	console.log "DELETE: " + req.params.id
-	return School.findById req.params.id, (err, school) ->
-		if !err
-			if school
-				return school.remove (err) ->
-					if !err
-						console.log "removed"
-						return res.send ''
-					else
-						console.log err
-			else
-				console.log "Resource not found!"
-				res.statusCode = 400
-				return res.send "Error 400: Resource not found!"
-		else
-			return console.log err
+  console.log "DELETE: #{req.params.id}"
+  return School.findById req.params.id, (err, school) ->
+    if not err
+      if school
+        return school.remove (err) ->
+          if not err
+            console.log "removed"
+            return res.send ''
+          else
+            console.log err
+      else
+        console.log "Resource not found!"
+        res.statusCode = 400
+        return res.send "Error 400: Resource not found!"
+    else
+      return console.log err

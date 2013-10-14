@@ -1,6 +1,10 @@
 {
   "name": "demo2",
   "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/efuentesp/demo2.git"
+  },
   "dependencies": {
     "express": "~3.2.4",
     "mongoose": "~3.6.20"
@@ -54,6 +58,6 @@
     "node": ">=0.8.0"
   },
   "scripts": {
-    "test": "grunt test"
+    "test": "NODE_ENV=test ./node_modules/.bin/mocha --reporter spec test/server/*.test.js"
   }
 }

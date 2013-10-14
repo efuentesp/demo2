@@ -19,6 +19,6 @@ schools app
 app.get '/api/awesomeThings', routes.awesomeThings
 
 app.use (req, res) ->
-	res.json {'ok': false, 'status': '404'}
+  res.json {'ok': false, 'status': '404'}
 
-module.exports = app
+exports = module.exports = app
