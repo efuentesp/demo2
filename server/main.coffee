@@ -12,6 +12,7 @@ mongoose = require 'mongoose'
 mongoose.connect config.db
 
 # Models
+require "./models/user"
 require "./models/school"
 
 # Authentication Middlware
@@ -20,8 +21,11 @@ require('./config/passport')(passport, config)
 # Web Application Framework
 app = express()
 app.use express.bodyParser()
+app.use passport.initialize()
 
 # Routes
+users = require './routes/users'
+users app
 schools = require './routes/schools'
 schools app
 

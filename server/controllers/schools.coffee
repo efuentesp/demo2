@@ -1,3 +1,4 @@
+passport = require 'passport'
 mongoose = require 'mongoose'
 School = mongoose.model('School')
 

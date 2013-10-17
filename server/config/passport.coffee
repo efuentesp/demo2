@@ -1,15 +1,11 @@
 mongoose = require 'mongoose'
-LocalStrategy = require('passport-local').Strategy
+BasicStrategy = require('passport-http').BasicStrategy
 User = mongoose.model 'User'
 
 module.exports = (passport, config) ->
 
-  localStrategy = new LocalStrategy
-      usernameField: 'username'
-      passwordField: 'password'
-
-  passport.use localStrategy,
-    (username, password, done) ->
+  passport.use new BasicStrategy (username, password, done) ->
+    User.findOne { username: username }, (err, user) ->
       return done(err) if err
       return done(null, false, {message: 'Unknown User'}) if not user
       return done(null, false, {message: 'Invalid Password'}) if not user.authenticate(password)
