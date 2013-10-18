@@ -18,7 +18,7 @@ UserSchema = new Schema
 UserSchema.methods = {
 
   authenticate: (plainText) ->
-    @plainText is @hashed_password
+    plainText is @hashed_password
     
 }
 

@@ -2,7 +2,8 @@ passport = require 'passport'
 mongoose = require 'mongoose'
 School = mongoose.model('School')
 
-# GET all
+# GET /api/schools
+# list all schools
 exports.list = (req, res) ->
   console.log "GET: "
   console.log req.query
@@ -14,7 +15,8 @@ exports.list = (req, res) ->
       else
         return console.log err
 
-# GET one
+# GET /api/schools/{school-id}
+# show a specific school
 exports.show = (req, res) ->
   console.log "GET: #{req.params.id}"
   return School.findById req.params.id, (err, school) ->
@@ -28,7 +30,8 @@ exports.show = (req, res) ->
     else
       return console.log err  
 
-# POST one
+# POST /api/schools
+# create a new school
 exports.create = (req, res) ->
   console.log "POST: "
   console.log req.body
@@ -40,7 +43,8 @@ exports.create = (req, res) ->
       return console.log err
   return res.send school
 
-# PUT one
+# PUT /api/schools/{school-id}
+# update a school
 exports.update = (req, res) ->
   console.log "PUT: #{req.params.id}"
   return School.findById req.params.id, (err, school) ->
@@ -61,7 +65,8 @@ exports.update = (req, res) ->
     else
       return console.log err
 
-# DELETE one
+# DELETE /api/schools/{school-id}
+# delete a school
 exports.destroy = (req, res) ->
   console.log "DELETE: #{req.params.id}"
   return School.findById req.params.id, (err, school) ->
