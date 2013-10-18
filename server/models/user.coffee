@@ -19,7 +19,11 @@ UserSchema.methods = {
 
   authenticate: (plainText) ->
     plainText is @hashed_password
-    
+  
+  validateToken: (token, tokenDecoded) ->
+    return false if token isnt @authToken
+    now = Math.round((new Date().getTime()/1000))
+    return tokenDecoded.expires > now
 }
 
 mongoose.model('User', UserSchema)

@@ -40,8 +40,17 @@ exports.auth = function(req, res) {
       };
       secret = 'Peacemakers2.0';
       token = jwt.encode(payload, secret);
-      console.log(jwt.decode(token, secret));
-      return res.send(token);
+      user.authToken = token;
+      user.save(function(err) {
+        if (!err) {
+          return console.log("updated");
+        } else {
+          return console.log(err);
+        }
+      });
+      return res.send({
+        token: token
+      });
     } else {
       console.log("Resource not found!");
       res.statusCode = 400;
@@ -53,6 +62,7 @@ exports.auth = function(req, res) {
 exports.list = function(req, res) {
   console.log("GET: ");
   console.log(req.query);
+  console.log(req.authInfo);
   return User.find().exec(function(err, users) {
     if (!err) {
       return res.send(users);

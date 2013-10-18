@@ -25,7 +25,7 @@ app.use passport.initialize()
 
 # Routes
 users = require './routes/users'
-users app
+users(app, config)
 schools = require './routes/schools'
 schools app
 

@@ -5,12 +5,15 @@ passport = require("passport");
 
 users = require('../controllers/users');
 
-module.exports = function(app) {
-  var auth;
+module.exports = function(app, config) {
+  var auth, bearer;
   auth = passport.authenticate('basic', {
     session: false
   });
+  bearer = passport.authenticate('bearer', {
+    session: false
+  });
   app.get('/api/auth', auth, users.auth);
-  app.get('/api/users', auth, users.list);
-  return app.post('/api/users', users.create);
+  app.get('/api/users', bearer, users.list);
+  return app.post('/api/users', bearer, users.create);
 };

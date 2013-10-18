@@ -28,10 +28,16 @@ exports.auth = (req, res) ->
       payload =
         username: user.username
         expires: Math.round((new Date().getTime()/1000)) + 3600 # 1 hr
-      secret = 'Peacemakers2.0'
+      secret = 'Peacemakers2.0' # TODO: Use Config
       token = jwt.encode(payload, secret)
-      console.log jwt.decode(token, secret)
-      return res.send token
+      user.authToken = token
+      user.save (err) ->
+        if not err
+          console.log "updated"
+        else
+          console.log err
+      #console.log jwt.decode(token, secret)
+      return res.send { token: token }
     else
       console.log "Resource not found!"
       res.statusCode = 400
@@ -42,6 +48,7 @@ exports.auth = (req, res) ->
 exports.list = (req, res) ->
   console.log "GET: "
   console.log req.query
+  console.log req.authInfo
 
   return User.find()
     .exec (err, users) ->

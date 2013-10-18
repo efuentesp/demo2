@@ -27,6 +27,14 @@ UserSchema = new Schema({
 UserSchema.methods = {
   authenticate: function(plainText) {
     return plainText === this.hashed_password;
+  },
+  validateToken: function(token, tokenDecoded) {
+    var now;
+    if (token !== this.authToken) {
+      return false;
+    }
+    now = Math.round(new Date().getTime() / 1000);
+    return tokenDecoded.expires > now;
   }
 };
 

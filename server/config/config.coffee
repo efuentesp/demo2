@@ -4,13 +4,15 @@ module.exports = {
 		app: {
 			name: 'Peacemakers (dev)'
 		},
-		db: 'mongodb://localhost/peacemakers-dev'
+		db: 'mongodb://localhost/peacemakers-dev',
+		secret: 'Peacemakers2.0'
 	}
 
 	test: {
 		app: {
 			name: 'Peacemakers (test)'
 		},
-		db: 'mongodb://localhost/peacemakers-dev'
+		db: 'mongodb://localhost/peacemakers-dev',
+		secret: 'Peacemakers2.0'
 	}
 }
