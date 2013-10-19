@@ -24,6 +24,8 @@ app.use express.bodyParser()
 app.use passport.initialize()
 
 # Routes
+auth = require './routes/auth'
+auth(app, config)
 users = require './routes/users'
 users(app, config)
 schools = require './routes/schools'

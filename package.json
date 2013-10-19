@@ -11,7 +11,8 @@
     "passport": "~0.1.17",
     "passport-http": "~0.2.2",
     "jwt-simple": "~0.1.0",
-    "passport-http-bearer": "~1.0.1"
+    "passport-http-bearer": "~1.0.1",
+    "crypto": "0.0.3"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
