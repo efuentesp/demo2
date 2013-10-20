@@ -27,7 +27,13 @@ UserSchema = new Schema({
   salt: {
     type: String,
     "default": ''
-  }
+  },
+  roles: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Role'
+    }
+  ]
 });
 
 UserSchema.virtual('password').set(function(password) {
