@@ -15,9 +15,9 @@ mongoose = require('mongoose');
 
 mongoose.connect(config.db);
 
-require("./models/user");
+require('./models/user');
 
-require("./models/school");
+require('./models/school');
 
 require('./config/passport')(passport, config);
 

@@ -3,6 +3,52 @@ crypto = require('crypto')
 
 Schema = mongoose.Schema
 
+PermissionSchema = new Schema
+  subject:
+    type: String
+    default: ''
+  action:
+    type: String
+    default: ''
+  displayName: String
+  description: String
+
+mongoose.model('Permission', PermissionSchema)
+
+resolvePermission = (permission, done) ->
+  mongoose.model('Permission').findOne {subject: permission.subject, action: permission.action}, (err, permission) ->
+    return done(err) if err
+    return done(new Error "Unknown Permission") if not permission
+    done(null, permission)
+    return
+  return
+
+RoleSchema = new Schema
+  name:
+    type: String
+    default: ''
+  displayName: String
+  description: String
+  permissions: [PermissionSchema]
+
+RoleSchema.methods = {
+
+  hasPermission: (subject, action) ->
+    if @.permissions
+      for p in @.permissions
+        return true if subject is p.subject and action is p.action
+    false
+
+  addPermission: (permission, done) ->
+    resolvePermission permission, (err, permission) ->
+      return done(err) if err
+      @.permissions.push permission._id
+      @.save(done)
+    return
+}
+
+mongoose.model('Role', RoleSchema)
+
 UserSchema = new Schema
   username:
     type: String
@@ -19,10 +65,7 @@ UserSchema = new Schema
   salt:
     type: String
     default: ''
-  roles: [
-    type: mongoose.Schema.Types.ObjectId
-    ref: 'Role'
-  ]
+  roles: [RoleSchema]
 
 UserSchema
   .virtual('password')

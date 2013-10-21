@@ -12,8 +12,8 @@ mongoose = require 'mongoose'
 mongoose.connect config.db
 
 # Models
-require "./models/user"
-require "./models/school"
+require './models/user'
+require './models/school'
 
 # Authentication Middlware
 require('./config/passport')(passport, config)
@@ -26,8 +26,10 @@ app.use passport.initialize()
 # Routes
 auth = require './routes/auth'
 auth(app, config)
+
 users = require './routes/users'
 users(app, config)
+
 schools = require './routes/schools'
 schools app
 
