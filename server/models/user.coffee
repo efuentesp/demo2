@@ -18,10 +18,8 @@ mongoose.model('Permission', PermissionSchema)
 resolvePermission = (permission, done) ->
   mongoose.model('Permission').findOne {subject: permission.subject, action: permission.action}, (err, permission) ->
     return done(err) if err
-    return done(new Error "Unknown Permission") if not permission
-    done(null, permission)
-    return
-  return
+    return done(new Error "Unknown Permission: #{permission}") if not permission
+    return done(null, permission)
 
 RoleSchema = new Schema
   name:
@@ -33,21 +31,33 @@ RoleSchema = new Schema
 
 RoleSchema.methods = {
 
-  hasPermission: (subject, action) ->
+  hasPermission: (permission) ->
     if @.permissions
       for p in @.permissions
-        return true if subject is p.subject and action is p.action
+        return true if permission.subject is p.subject and permission.action is p.action
     false
 
-  addPermission: (permission, done) ->
-    resolvePermission permission, (err, permission) ->
+  addPermission: (p, done) ->
+    if @.hasPermission p
+      return done(new Error "Existing Permission: #{p}")
+    resolvePermission p, (err, permission) =>
       return done(err) if err
-      @.permissions.push permission._id
-      @.save(done)
-    return
+      @.permissions.push
+        _id: permission._id
+        subject: permission.subject
+        action: permission.action
+      done()
+
 }
 
 mongoose.model('Role', RoleSchema)
+
+resolveRole = (roleName, done) ->
+  mongoose.model('Role').findOne {name: roleName}, (err, role) ->
+    return done(err) if err
+    return done(new Error "Unknown Role: #{roleName}") if not role
+    return done(null, role)
+
 
 UserSchema = new Schema
   username:
@@ -97,6 +107,24 @@ UserSchema.methods = {
       return encrypred
     catch err
       return ''
+
+  hasRole: (roleName) ->
+    if @.roles
+      for r in @.roles
+        return true if roleName is r.name
+    false
+
+  addRole: (roleName, done) ->
+    if @.hasRole roleName
+      return done(new Error "Existing Role: #{roleName}")
+    resolveRole roleName, (err, role) =>
+      return done(err) if err
+      @.roles.push
+        _id: role._id
+        name: role.name
+      @.save (err) ->
+        done(err) if err
+        done()
 
 }
 

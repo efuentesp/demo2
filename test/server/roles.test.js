@@ -12,14 +12,10 @@ Permission = mongoose.model('Permission');
 Role = mongoose.model('Role');
 
 describe("Role Model", function() {
+  var _this = this;
   before(function(done) {
-    var p, permission, _i, _len, _ref;
-    mongoose.connection.db.dropCollection("roles", function(err) {
-      if (err) {
-        return done(err);
-      }
-    });
-    this.permissions = [
+    var p, permission, permissions, _i, _len;
+    permissions = [
       {
         subject: "Schools",
         action: "create",
@@ -37,9 +33,8 @@ describe("Role Model", function() {
         description: "Description to destroy a School."
       }
     ];
-    _ref = this.permissions;
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      p = _ref[_i];
+    for (_i = 0, _len = permissions.length; _i < _len; _i++) {
+      p = permissions[_i];
       permission = new Permission(p);
       permission.save(function(err) {
         if (err) {
@@ -50,132 +45,77 @@ describe("Role Model", function() {
     return done();
   });
   it("should register a new Role", function(done) {
-    var permissions;
-    permissions = [
-      {
-        subject: "Schools",
-        action: "create",
-        displayName: "Create new School",
-        description: "Description to create a new School."
-      }, {
-        subject: "Schools",
-        action: "destroy",
-        displayName: "Destroy a School",
-        description: "Description to destroy a School."
-      }
-    ];
-    this.role = new Role({
+    _this.role = new Role({
       name: "admin",
       displayName: "Admin",
-      description: "Site Administrator",
-      permissions: permissions
+      description: "Site Administrator"
     });
-    this.role.save(function(err) {
-      if (err) {
-        return done(err);
-      }
+    return _this.role.save(function(err) {
+      should.not.exist(err);
+      return done();
     });
-    this.role.permissions.length.should.equal(2);
-    return done();
   });
   it("should add a new valid Permission to the Role", function(done) {
-    var permission,
-      _this = this;
+    var permission;
     permission = {
       subject: 'Schools',
       action: 'edit'
     };
-    return this.role.addPermission(permission, function(err) {
+    return _this.role.addPermission(permission, function(err) {
       should.not.exist(err);
-      _this.role.permissions.should.have.lengthOf(3);
-      return done();
+      return _this.role.save(function(err) {
+        should.not.exist(err);
+        _this.role.permissions.should.have.lengthOf(1);
+        _this.role.permissions[0].subject.should.equal('Schools');
+        _this.role.permissions[0].action.should.equal('edit');
+        return done();
+      });
     });
   });
-  it("should add a new invalid Permission to the Role", function(done) {
-    var permission,
-      _this = this;
+  it("should not add a new invalid Permission to the Role", function(done) {
+    var permission;
     permission = {
       subject: 'XXX',
       action: 'edit'
     };
-    return this.role.addPermission(permission, function(err) {
+    return _this.role.addPermission(permission, function(err) {
       should.exist(err);
-      _this.role.permissions.should.have.lengthOf(2);
+      _this.role.permissions.should.have.lengthOf(1);
       return done();
     });
   });
-  it("should check if Role has a given Permission", function(done) {
-    Permission.findOne({
-      subject: "Schools",
-      action: "edit"
-    }, function(err, permission) {
-      var role;
-      if (err) {
-        throw err;
-      }
-      role = new Role({
-        name: "admin",
-        displayName: "Admin",
-        description: "Site Administrator"
-      });
-      return role.save(function(err) {
-        if (err) {
-          throw err;
-        }
-        role.addPermission(permission);
-        return role.save(function(err) {
-          if (err) {
-            throw err;
-          }
-          return role.hasPermission("Schools", "edit").should.equal(true);
-        });
-      });
-    });
+  it("should check if a Role has a given Permission", function(done) {
+    var permission;
+    permission = {
+      subject: 'Schools',
+      action: 'edit'
+    };
+    _this.role.hasPermission(permission).should.equal(true);
     return done();
   });
   it("should not add duplicated Permissions", function(done) {
-    Permission.findOne({
-      subject: "Schools",
-      action: "edit"
-    }, function(err, permission) {
-      var role;
-      if (err) {
-        throw err;
-      }
-      role = new Role({
-        name: "admin",
-        displayName: "Admin",
-        description: "Site Administrator"
-      });
-      return role.save(function(err) {
-        if (err) {
-          throw err;
-        }
-        role.addPermission(permission);
-        return role.save(function(err) {
-          if (err) {
-            throw err;
-          }
-          role.hasPermission("Schools", "edit").should.equal(true);
-          role.permissions.length.should.equal(2);
-          role.addPermission(permission);
-          return role.save(function(err) {
-            if (err) {
-              throw err;
-            }
-            return role.permissions.length.should.equal(3);
-          });
-        });
-      });
+    var permission;
+    permission = {
+      subject: 'Schools',
+      action: 'edit'
+    };
+    return _this.role.addPermission(permission, function(err) {
+      should.exist(err);
+      _this.role.permissions.should.have.lengthOf(1);
+      return done();
     });
-    return done();
   });
   return after(function(done) {
-    mongoose.connection.db.dropCollection("roles", function(err) {
+    return mongoose.connection.db.dropCollection("roles", function(err) {
       if (err) {
-        throw err;
+        done(err);
       }
+      return mongoose.connection.db.dropCollection("permissions", function(err) {
+        if (err) {
+          done(err);
+        }
+        return done();
+      });
     });
-    return done();
   });
 });
