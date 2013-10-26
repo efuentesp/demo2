@@ -75,7 +75,7 @@ UserSchema = new Schema
   salt:
     type: String
     default: ''
-  roles: [RoleSchema]
+  roles: [type: Schema.ObjectId, ref: 'Role']
 
 UserSchema
   .virtual('password')
@@ -111,20 +111,20 @@ UserSchema.methods = {
   hasRole: (roleName) ->
     if @.roles
       for r in @.roles
-        return true if roleName is r.name
-    false
+        mongoose.model('Role').findById r, (err, role) ->
+          throw err if err
+          throw err if not role
+          return true if roleName is role.name
+    else
+      return false
 
   addRole: (roleName, done) ->
     if @.hasRole roleName
       return done(new Error "Existing Role: #{roleName}")
     resolveRole roleName, (err, role) =>
       return done(err) if err
-      @.roles.push
-        _id: role._id
-        name: role.name
-      @.save (err) ->
-        done(err) if err
-        done()
+      @.roles.push _id: role._id
+      done()
 
 }
 

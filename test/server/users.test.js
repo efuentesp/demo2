@@ -17,17 +17,6 @@ describe("User Model", function() {
   var _this = this;
   before(function(done) {
     var p, permission, permissions, role, _i, _len;
-    role = new Role({
-      name: "admin",
-      displayName: "Admin",
-      description: "Site Administrator"
-    });
-    console.log(role);
-    role.save(function(err) {
-      if (err) {
-        return done(err);
-      }
-    });
     permissions = [
       {
         subject: "Schools",
@@ -55,7 +44,12 @@ describe("User Model", function() {
         }
       });
     }
-    return done();
+    role = new Role({
+      name: "admin",
+      displayName: "Admin",
+      description: "Site Administrator"
+    });
+    return role.save(done);
   });
   it("should register a new User", function(done) {
     _this.user = new User({
@@ -68,18 +62,41 @@ describe("User Model", function() {
       return done();
     });
   });
-  it("should add an existing Role", function(done) {
+  it("should add a new Role to User", function(done) {
     return _this.user.addRole('admin', function(err) {
       should.not.exist(err);
-      return this.user.save(function(err) {
+      return _this.user.save(function(err) {
         should.not.exist(err);
-        this.roles.should.have.lengthOf(1);
-        this.roles[0].name.should.equal('admin');
+        _this.user.roles.should.have.lengthOf(1);
         return done();
       });
     });
   });
+  it("should notify when a Role was previously added", function(done) {
+    return _this.user.addRole('admin', function(err) {
+      should.exist(err);
+      _this.user.roles.should.have.lengthOf(1);
+      return done();
+    });
+  });
+  it("should notify when the new Role doesn't exist", function(done) {
+    return _this.user.addRole('xxx', function(err) {
+      should.exist(err);
+      _this.user.roles.should.have.lengthOf(1);
+      return done();
+    });
+  });
   return after(function(done) {
+    mongoose.connection.db.dropCollection("permissions", function(err) {
+      if (err) {
+        return done(err);
+      }
+    });
+    mongoose.connection.db.dropCollection("roles", function(err) {
+      if (err) {
+        return done(err);
+      }
+    });
     return mongoose.connection.db.dropCollection("users", function(err) {
       if (err) {
         done(err);

@@ -117,7 +117,12 @@ UserSchema = new Schema({
     type: String,
     "default": ''
   },
-  roles: [RoleSchema]
+  roles: [
+    {
+      type: Schema.ObjectId,
+      ref: 'Role'
+    }
+  ]
 });
 
 UserSchema.virtual('password').set(function(password) {
@@ -157,17 +162,28 @@ UserSchema.methods = {
     }
   },
   hasRole: function(roleName) {
-    var r, _i, _len, _ref;
+    var r, _i, _len, _ref, _results;
     if (this.roles) {
       _ref = this.roles;
+      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         r = _ref[_i];
-        if (roleName === r.name) {
-          return true;
-        }
+        _results.push(mongoose.model('Role').findById(r, function(err, role) {
+          if (err) {
+            throw err;
+          }
+          if (!role) {
+            throw err;
+          }
+          if (roleName === role.name) {
+            return true;
+          }
+        }));
       }
+      return _results;
+    } else {
+      return false;
     }
-    return false;
   },
   addRole: function(roleName, done) {
     var _this = this;
@@ -179,15 +195,9 @@ UserSchema.methods = {
         return done(err);
       }
       _this.roles.push({
-        _id: role._id,
-        name: role.name
+        _id: role._id
       });
-      return _this.save(function(err) {
-        if (err) {
-          done(err);
-        }
-        return done();
-      });
+      return done();
     });
   }
 };

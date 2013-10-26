@@ -10,15 +10,6 @@ describe "User Model", ->
 
   before (done) ->
 
-    role = new Role
-      name: "admin"
-      displayName: "Admin"
-      description: "Site Administrator"
-
-    console.log role
-    role.save (err) ->
-      done(err) if err
-
     permissions = [
       {
         subject: "Schools"
@@ -39,11 +30,20 @@ describe "User Model", ->
         description: "Description to destroy a School."
       }
     ]
+
     for p in permissions
       permission = new Permission p
       permission.save (err) ->
         done(err) if err
-    done()
+
+    role = new Role
+      name: "admin"
+      displayName: "Admin"
+      description: "Site Administrator"
+
+    role.save(done)
+
+    #done()
 
 
   it "should register a new User", (done) =>
@@ -57,18 +57,35 @@ describe "User Model", ->
       done()
 
 
-  it "should add an existing Role", (done) =>
+  it "should add a new Role to User", (done) =>
 
-    @user.addRole 'admin', (err) ->
+    @user.addRole 'admin', (err) =>
       should.not.exist err
-      @user.save (err) ->
+      @user.save (err) =>
         should.not.exist err
-        @.roles.should.have.lengthOf 1
-        @.roles[0].name.should.equal 'admin'
+        @user.roles.should.have.lengthOf 1
         done()
+
+  it "should notify when a Role was previously added", (done) =>
+
+    @user.addRole 'admin', (err) =>
+      should.exist err
+      @user.roles.should.have.lengthOf 1
+      done()
+
+  it "should notify when the new Role doesn't exist", (done) =>
+
+    @user.addRole 'xxx', (err) =>
+      should.exist err
+      @user.roles.should.have.lengthOf 1
+      done()
 
 
   after (done) ->
+    mongoose.connection.db.dropCollection "permissions", (err) ->
+      done(err) if err
+    mongoose.connection.db.dropCollection "roles", (err) ->
+      done(err) if err      
     mongoose.connection.db.dropCollection "users", (err) ->
       done(err) if err
       done()
