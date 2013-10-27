@@ -161,38 +161,27 @@ UserSchema.methods = {
       return '';
     }
   },
-  hasRole: function(roleName) {
-    var r, _i, _len, _ref, _results;
+  hasRole: function(roleId) {
+    var r, _i, _len, _ref;
     if (this.roles) {
       _ref = this.roles;
-      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         r = _ref[_i];
-        _results.push(mongoose.model('Role').findById(r, function(err, role) {
-          if (err) {
-            throw err;
-          }
-          if (!role) {
-            throw err;
-          }
-          if (roleName === role.name) {
-            return true;
-          }
-        }));
+        if (roleId.toString() === r.toString()) {
+          return true;
+        }
       }
-      return _results;
-    } else {
-      return false;
     }
+    return false;
   },
   addRole: function(roleName, done) {
     var _this = this;
-    if (this.hasRole(roleName)) {
-      return done(new Error("Existing Role: " + roleName));
-    }
     return resolveRole(roleName, function(err, role) {
       if (err) {
         return done(err);
+      }
+      if (_this.hasRole(role._id)) {
+        return done(new Error("Existing Role: " + roleName));
       }
       _this.roles.push({
         _id: role._id

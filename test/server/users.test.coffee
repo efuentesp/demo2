@@ -43,8 +43,6 @@ describe "User Model", ->
 
     role.save(done)
 
-    #done()
-
 
   it "should register a new User", (done) =>
 

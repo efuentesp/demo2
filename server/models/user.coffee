@@ -108,21 +108,17 @@ UserSchema.methods = {
     catch err
       return ''
 
-  hasRole: (roleName) ->
+  hasRole: (roleId) ->
     if @.roles
       for r in @.roles
-        mongoose.model('Role').findById r, (err, role) ->
-          throw err if err
-          throw err if not role
-          return true if roleName is role.name
-    else
-      return false
+        return true if roleId.toString() is r.toString()
+    false
 
   addRole: (roleName, done) ->
-    if @.hasRole roleName
-      return done(new Error "Existing Role: #{roleName}")
     resolveRole roleName, (err, role) =>
       return done(err) if err
+      if @.hasRole role._id
+        return done(new Error "Existing Role: #{roleName}")
       @.roles.push _id: role._id
       done()
 
