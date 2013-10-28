@@ -66,8 +66,6 @@ describe("Role Model", function() {
       return _this.role.save(function(err) {
         should.not.exist(err);
         _this.role.permissions.should.have.lengthOf(1);
-        _this.role.permissions[0].subject.should.equal('Schools');
-        _this.role.permissions[0].action.should.equal('edit');
         return done();
       });
     });
@@ -83,15 +81,6 @@ describe("Role Model", function() {
       _this.role.permissions.should.have.lengthOf(1);
       return done();
     });
-  });
-  it("should check if a Role has a given Permission", function(done) {
-    var permission;
-    permission = {
-      subject: 'Schools',
-      action: 'edit'
-    };
-    _this.role.hasPermission(permission).should.equal(true);
-    return done();
   });
   it("should not add duplicated Permissions", function(done) {
     var permission;

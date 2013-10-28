@@ -27,25 +27,22 @@ RoleSchema = new Schema
     default: ''
   displayName: String
   description: String
-  permissions: [PermissionSchema]
+  permissions: [type: Schema.ObjectId, ref: 'Permission']
 
 RoleSchema.methods = {
 
-  hasPermission: (permission) ->
+  hasPermission: (permissionId) ->
     if @.permissions
       for p in @.permissions
-        return true if permission.subject is p.subject and permission.action is p.action
+        return true if permissionId.toString() is p.toString()
     false
 
   addPermission: (p, done) ->
-    if @.hasPermission p
-      return done(new Error "Existing Permission: #{p}")
     resolvePermission p, (err, permission) =>
       return done(err) if err
-      @.permissions.push
-        _id: permission._id
-        subject: permission.subject
-        action: permission.action
+      if @.hasPermission permission._id
+        return done(new Error "Existing Permission: #{permission.subject} #{permission.action}")
+      @.permissions.push _id: permission._id
       done()
 
 }

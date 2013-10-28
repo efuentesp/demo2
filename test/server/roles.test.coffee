@@ -59,8 +59,6 @@ describe "Role Model", ->
       @role.save (err) =>
         should.not.exist err
         @role.permissions.should.have.lengthOf 1
-        @role.permissions[0].subject.should.equal 'Schools'
-        @role.permissions[0].action.should.equal 'edit'
         done()
 
 
@@ -74,16 +72,6 @@ describe "Role Model", ->
       should.exist err
       @role.permissions.should.have.lengthOf 1
       done()
-
-
-  it "should check if a Role has a given Permission", (done) =>
-
-    permission =
-      subject: 'Schools'
-      action: 'edit'
-
-    @role.hasPermission(permission).should.equal true
-    done()
 
 
   it "should not add duplicated Permissions", (done) =>

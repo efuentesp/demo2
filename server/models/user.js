@@ -44,17 +44,22 @@ RoleSchema = new Schema({
   },
   displayName: String,
   description: String,
-  permissions: [PermissionSchema]
+  permissions: [
+    {
+      type: Schema.ObjectId,
+      ref: 'Permission'
+    }
+  ]
 });
 
 RoleSchema.methods = {
-  hasPermission: function(permission) {
+  hasPermission: function(permissionId) {
     var p, _i, _len, _ref;
     if (this.permissions) {
       _ref = this.permissions;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         p = _ref[_i];
-        if (permission.subject === p.subject && permission.action === p.action) {
+        if (permissionId.toString() === p.toString()) {
           return true;
         }
       }
@@ -63,17 +68,15 @@ RoleSchema.methods = {
   },
   addPermission: function(p, done) {
     var _this = this;
-    if (this.hasPermission(p)) {
-      return done(new Error("Existing Permission: " + p));
-    }
     return resolvePermission(p, function(err, permission) {
       if (err) {
         return done(err);
       }
+      if (_this.hasPermission(permission._id)) {
+        return done(new Error("Existing Permission: " + permission.subject + " " + permission.action));
+      }
       _this.permissions.push({
-        _id: permission._id,
-        subject: permission.subject,
-        action: permission.action
+        _id: permission._id
       });
       return done();
     });
