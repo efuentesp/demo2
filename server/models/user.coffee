@@ -1,5 +1,6 @@
 mongoose = require 'mongoose'
-crypto = require('crypto')
+crypto = require 'crypto'
+async = require 'async'
 
 Schema = mongoose.Schema
 
@@ -119,22 +120,35 @@ UserSchema.methods = {
       @.roles.push _id: role._id
       done()
 
-  getPermissions: ->
+  getPermissions: (done) ->
     permissions = []
 
-    if @.roles
-      for r in @.roles
-        mongoose.model('Role').findById r, (err, role) ->
-          if role.permissions
-            for p in role.permissions
-              mongoose.model('Permission').findById p, (err, permission) ->
-                console.log permission
-                permissions.push
-                  subject: permission.subject
-                  action: permission.action
-    console.log permissions
-    return permissions
+    loopPermissions = (p, done) ->
+      mongoose.model('Permission').findById p, (err, permission) ->
+        return done(err) if err
+        permissions.push
+          subject: permission.subject
+          action: permission.action
+        #console.log "1. #{permissions}"
+        done()
 
+    loopRoles = (r, done) ->
+      mongoose.model('Role').findById r, (err, role) ->
+        if role.permissions
+          async.each role.permissions, loopPermissions, (err) ->
+            done(err) if err
+            #console.log "2. #{permissions}"
+            done()
+        else
+          done()
+
+    if @.roles
+      async.each @.roles, loopRoles, (err) ->
+        return done(err) if err
+        #console.log "3. #{permissions}"
+        return done(null, permissions)
+    else
+      return done(null, permissions)
 }
 
 mongoose.model('User', UserSchema)

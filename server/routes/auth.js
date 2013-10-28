@@ -47,16 +47,24 @@ module.exports = function(app, config) {
         };
         token = jwt.encode(payload, config.secret);
         user.authToken = token;
-        user.save(function(err) {
-          if (!err) {
-            return console.log("updated");
-          } else {
-            return console.log(err);
+        return user.save(function(err) {
+          if (err) {
+            console.log(err);
+            res.statusCode = 500;
+            return res.send("Error 500: Internal Server Error found!");
           }
-        });
-        return res.send({
-          token: token,
-          auth: user.getPermissions()
+          console.log("updated");
+          return user.getPermissions(function(err, permissions) {
+            if (err) {
+              console.log(err);
+              res.statusCode = 500;
+              return res.send("Error 500: Internal Server Error found!");
+            }
+            return res.send({
+              token: token,
+              auth: permissions
+            });
+          });
         });
       } else {
         console.log("Resource not found!");

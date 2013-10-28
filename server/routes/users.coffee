@@ -4,7 +4,8 @@ users = require '../controllers/users'
 module.exports = (app, config) ->
   bearer = passport.authenticate('bearer', { session: false })
 
-  app.get     '/api/users',     bearer, users.list
+  #app.get     '/api/users',     bearer, users.list
+  app.get     '/api/users',             users.list
   #app.get     '/api/users/:id',        users.show  
   app.post    '/api/users',             users.create
   app.post    '/api/users/:id/roles',   users.addRole

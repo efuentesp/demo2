@@ -35,11 +35,18 @@ module.exports = (app, config) ->
         token = jwt.encode(payload, config.secret)
         user.authToken = token
         user.save (err) ->
-          if not err
-            console.log "updated"
-          else
+          if err
             console.log err
-        return res.send { token: token, auth: user.getPermissions() }
+            res.statusCode = 500
+            return res.send "Error 500: Internal Server Error found!"
+          console.log "updated"
+          user.getPermissions (err, permissions) ->
+            if err
+              console.log err
+              res.statusCode = 500
+              return res.send "Error 500: Internal Server Error found!"
+            #console.log permissions
+            return res.send { token: token, auth: permissions }
       else
         console.log "Resource not found!"
         res.statusCode = 400

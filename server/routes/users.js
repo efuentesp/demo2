@@ -10,7 +10,7 @@ module.exports = function(app, config) {
   bearer = passport.authenticate('bearer', {
     session: false
   });
-  app.get('/api/users', bearer, users.list);
+  app.get('/api/users', users.list);
   app.post('/api/users', users.create);
   return app.post('/api/users/:id/roles', users.addRole);
 };
