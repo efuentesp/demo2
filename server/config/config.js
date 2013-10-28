@@ -11,7 +11,7 @@ module.exports = {
     app: {
       name: 'Peacemakers (test)'
     },
-    db: 'mongodb://localhost/peacemakers-dev',
+    db: 'mongodb://localhost/peacemakers-test',
     secret: 'Peacemakers2.0'
   }
 };

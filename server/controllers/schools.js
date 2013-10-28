@@ -15,6 +15,8 @@ exports.list = function(req, res) {
       return res.send(schools);
     } else {
       return console.log(err);
+      res.statusCode = 500;
+      return res.send("Error 500: Internal Server Error found!");
     }
   });
 };
@@ -32,6 +34,8 @@ exports.show = function(req, res) {
       }
     } else {
       return console.log(err);
+      res.statusCode = 500;
+      return res.send("Error 500: Internal Server Error found!");
     }
   });
 };
@@ -46,6 +50,8 @@ exports.create = function(req, res) {
       return console.log("created");
     } else {
       return console.log(err);
+      res.statusCode = 500;
+      return res.send("Error 500: Internal Server Error found!");
     }
   });
   return res.send(school);
@@ -63,6 +69,8 @@ exports.update = function(req, res) {
             console.log("updated");
           } else {
             console.log(err);
+            res.statusCode = 500;
+            return res.send("Error 500: Internal Server Error found!");
           }
           return res.send(school);
         });
@@ -73,6 +81,8 @@ exports.update = function(req, res) {
       }
     } else {
       return console.log(err);
+      res.statusCode = 500;
+      return res.send("Error 500: Internal Server Error found!");
     }
   });
 };
@@ -87,7 +97,9 @@ exports.destroy = function(req, res) {
             console.log("removed");
             return res.send('');
           } else {
-            return console.log(err);
+            console.log(err);
+            res.statusCode = 500;
+            return res.send("Error 500: Internal Server Error found!");
           }
         });
       } else {
@@ -97,6 +109,8 @@ exports.destroy = function(req, res) {
       }
     } else {
       return console.log(err);
+      res.statusCode = 500;
+      return res.send("Error 500: Internal Server Error found!");
     }
   });
 };

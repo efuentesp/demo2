@@ -11,5 +11,6 @@ module.exports = function(app, config) {
     session: false
   });
   app.get('/api/users', bearer, users.list);
-  return app.post('/api/users', users.create);
+  app.post('/api/users', users.create);
+  return app.post('/api/users/:id/roles', users.addRole);
 };

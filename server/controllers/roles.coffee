@@ -1,60 +1,60 @@
 mongoose = require 'mongoose'
-User = mongoose.model('User')
+Role = mongoose.model('Role')
 
-# GET /api/users
-# list all users
+# GET /api/roles
+# list all roles
 exports.list = (req, res) ->
   console.log "GET: "
   console.log req.query
   console.log req.authInfo
 
-  return User.find()
-    .exec (err, users) ->
+  return Role.find()
+    .exec (err, roles) ->
       if err
         console.log err
         res.statusCode = 500
         return res.send "Error 500: Internal Server Error found!"
-      return res.send users
+      return res.send roles
 
-# POST /api/users
-# create a new user
+# POST /api/roles
+# create a new role
 exports.create = (req, res) ->
   console.log "POST: "
   console.log req.body
-  user = new User req.body
-  user.save (err) ->
+  role = new Role req.body
+  role.save (err) ->
     if err
       console.log err
       res.statusCode = 500
       return res.send "Error 500: Internal Server Error found!"
     console.log "created"
-    return res.send user
+    return res.send role
 
-# POST /api/users/{user-id}/roles
-# add new role to user
-exports.addRole = (req, res) ->
-  console.log "User: #{req.params.id}"
+# POST /api/roles/{role-id}/permissions
+# add a new permission to role
+exports.addPermission = (req, res) ->
+  console.log "Role: #{req.params.id}"
   console.log "POST: "
   console.log req.body
-  User.findById req.params.id, (err, user) ->
+  Role.findById req.params.id, (err, role) ->
     if err
       console.log err
       res.statusCode = 500
       return res.send "Error 500: Internal Server Error found!"
-    if not user
+    if not role
       console.log err
       res.statusCode = 404
       return res.send "Error 404: Resource not found!"
 
-    user.addRole req.body.roleName, (err) ->
+    role.addPermission req.body, (err) ->
       if err
         console.log err
         res.statusCode = 500
         return res.send "Error 500: Internal Server Error found!"
-      user.save (err) ->
+      role.save (err) ->
         if err
           console.log err
           res.statusCode = 500
           return res.send "Error 500: Internal Server Error found!"
-        console.log "role added to user"
-        return res.send user
+        console.log "permission added to role"
+        return res.send role

@@ -55,7 +55,8 @@ module.exports = function(app, config) {
           }
         });
         return res.send({
-          token: token
+          token: token,
+          auth: user.getPermissions()
         });
       } else {
         console.log("Resource not found!");

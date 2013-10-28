@@ -14,6 +14,8 @@ exports.list = (req, res) ->
         return res.send schools
       else
         return console.log err
+        res.statusCode = 500
+        return res.send "Error 500: Internal Server Error found!"
 
 # GET /api/schools/{school-id}
 # show a specific school
@@ -28,7 +30,9 @@ exports.show = (req, res) ->
         res.statusCode = 400
         return res.send "Error 400: Resource not found!"
     else
-      return console.log err  
+      return console.log err
+      res.statusCode = 500
+      return res.send "Error 500: Internal Server Error found!"
 
 # POST /api/schools
 # create a new school
@@ -41,6 +45,8 @@ exports.create = (req, res) ->
       return console.log "created"
     else
       return console.log err
+      res.statusCode = 500
+      return res.send "Error 500: Internal Server Error found!"
   return res.send school
 
 # PUT /api/schools/{school-id}
@@ -57,6 +63,8 @@ exports.update = (req, res) ->
             console.log "updated"
           else
             console.log err
+            res.statusCode = 500
+            return res.send "Error 500: Internal Server Error found!"
           return res.send school
       else
         console.log "Resource not found!"
@@ -64,6 +72,8 @@ exports.update = (req, res) ->
         return res.send "Error 400: Resource not found!"
     else
       return console.log err
+      res.statusCode = 500
+      return res.send "Error 500: Internal Server Error found!"
 
 # DELETE /api/schools/{school-id}
 # delete a school
@@ -78,9 +88,13 @@ exports.destroy = (req, res) ->
             return res.send ''
           else
             console.log err
+            res.statusCode = 500
+            return res.send "Error 500: Internal Server Error found!"
       else
         console.log "Resource not found!"
         res.statusCode = 400
         return res.send "Error 400: Resource not found!"
     else
       return console.log err
+      res.statusCode = 500
+      return res.send "Error 500: Internal Server Error found!"

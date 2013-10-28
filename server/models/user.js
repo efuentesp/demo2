@@ -191,6 +191,36 @@ UserSchema.methods = {
       });
       return done();
     });
+  },
+  getPermissions: function() {
+    var permissions, r, _i, _len, _ref;
+    permissions = [];
+    if (this.roles) {
+      _ref = this.roles;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        r = _ref[_i];
+        mongoose.model('Role').findById(r, function(err, role) {
+          var p, _j, _len1, _ref1, _results;
+          if (role.permissions) {
+            _ref1 = role.permissions;
+            _results = [];
+            for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+              p = _ref1[_j];
+              _results.push(mongoose.model('Permission').findById(p, function(err, permission) {
+                console.log(permission);
+                return permissions.push({
+                  subject: permission.subject,
+                  action: permission.action
+                });
+              }));
+            }
+            return _results;
+          }
+        });
+      }
+    }
+    console.log(permissions);
+    return permissions;
   }
 };
 

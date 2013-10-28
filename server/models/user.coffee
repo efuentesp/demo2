@@ -119,6 +119,22 @@ UserSchema.methods = {
       @.roles.push _id: role._id
       done()
 
+  getPermissions: ->
+    permissions = []
+
+    if @.roles
+      for r in @.roles
+        mongoose.model('Role').findById r, (err, role) ->
+          if role.permissions
+            for p in role.permissions
+              mongoose.model('Permission').findById p, (err, permission) ->
+                console.log permission
+                permissions.push
+                  subject: permission.subject
+                  action: permission.action
+    console.log permissions
+    return permissions
+
 }
 
 mongoose.model('User', UserSchema)

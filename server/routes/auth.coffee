@@ -39,7 +39,7 @@ module.exports = (app, config) ->
             console.log "updated"
           else
             console.log err
-        return res.send { token: token }
+        return res.send { token: token, auth: user.getPermissions() }
       else
         console.log "Resource not found!"
         res.statusCode = 400

@@ -27,6 +27,12 @@ app.use passport.initialize()
 auth = require './routes/auth'
 auth(app, config)
 
+permissions = require './routes/permissions'
+permissions(app, config)
+
+roles = require './routes/roles'
+roles(app, config)
+
 users = require './routes/users'
 users(app, config)
 
