@@ -134,6 +134,7 @@ UserSchema.methods = {
 
     loopRoles = (r, done) ->
       mongoose.model('Role').findById r, (err, role) ->
+        return done(err) if err
         if role.permissions
           async.each role.permissions, loopPermissions, (err) ->
             done(err) if err
@@ -149,6 +150,21 @@ UserSchema.methods = {
         return done(null, permissions)
     else
       return done(null, permissions)
+
+  can: (subject ,action, done) ->
+    isAuthorized = false
+
+    findPermission = (p, done) ->
+      if p.subject is subject and p.action is action
+        isAuthorized = true
+      done()
+
+    if @.roles
+      @.getPermissions (err, permissions) ->
+        async.each permissions, findPermission, () ->
+          return done(null, isAuthorized)
+    else
+      return done(null, isAuthorized)
 }
 
 mongoose.model('User', UserSchema)

@@ -1,4 +1,5 @@
 mongoose = require "mongoose"
+async = require "async"
 should = require "should"
 app = require "../../server/main"
 
@@ -31,17 +32,28 @@ describe "User Model", ->
       }
     ]
 
-    for p in permissions
+    savePermissions = (p, done) ->
       permission = new Permission p
       permission.save (err) ->
         done(err) if err
+        done()
 
-    role = new Role
-      name: "admin"
-      displayName: "Admin"
-      description: "Site Administrator"
+    addPermissionsToRole = (p, done) ->
+      @role.addPermission p, (err) =>
+        return done(err) if err
+        role.save (err) =>
+          return done(err) if err
+          return done()
 
-    role.save(done)
+    async.each permissions, savePermissions, (err) ->
+      return done(err) if err
+      @role = new Role
+        name: "admin"
+        displayName: "Admin"
+        description: "Site Administrator"
+      async.each permissions, addPermissionsToRole, (err) ->
+        return done(err) if err
+        return done()
 
 
   it "should register a new User", (done) =>
@@ -64,6 +76,7 @@ describe "User Model", ->
         @user.roles.should.have.lengthOf 1
         done()
 
+
   it "should notify when a Role was previously added", (done) =>
 
     @user.addRole 'admin', (err) =>
@@ -71,11 +84,28 @@ describe "User Model", ->
       @user.roles.should.have.lengthOf 1
       done()
 
+
   it "should notify when the new Role doesn't exist", (done) =>
 
     @user.addRole 'xxx', (err) =>
       should.exist err
       @user.roles.should.have.lengthOf 1
+      done()
+
+
+  it "should list all permissions", (done) =>
+
+    @user.getPermissions (err, permissions) =>
+      should.not.exist err
+      permissions.should.have.lengthOf 3
+      done()
+
+
+  it "should tell if it has certain permissions", (done) =>
+
+    @user.can 'Schools', 'edit', (err, has) ->
+      should.not.exist err
+      has.should.equal true
       done()
 
 

@@ -211,6 +211,9 @@ UserSchema.methods = {
     };
     loopRoles = function(r, done) {
       return mongoose.model('Role').findById(r, function(err, role) {
+        if (err) {
+          return done(err);
+        }
         if (role.permissions) {
           return async.each(role.permissions, loopPermissions, function(err) {
             if (err) {
@@ -232,6 +235,25 @@ UserSchema.methods = {
       });
     } else {
       return done(null, permissions);
+    }
+  },
+  can: function(subject, action, done) {
+    var findPermission, isAuthorized;
+    isAuthorized = false;
+    findPermission = function(p, done) {
+      if (p.subject === subject && p.action === action) {
+        isAuthorized = true;
+      }
+      return done();
+    };
+    if (this.roles) {
+      return this.getPermissions(function(err, permissions) {
+        return async.each(permissions, findPermission, function() {
+          return done(null, isAuthorized);
+        });
+      });
+    } else {
+      return done(null, isAuthorized);
     }
   }
 };
