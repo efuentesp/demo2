@@ -1,0 +1,19 @@
+
+<div class="container">
+  <form name="loginForm" role="login" ng-submit="loginUser()" class="form-signin">
+    <h2 class="form-signin-heading">Login</h2>
+    <div class="control-group">
+      <label for="username" class="control-label">Usuario:</label>
+      <div class="controls">
+        <input type="text" name="username" ng-model="login.username" placeholder="Usuario" size="50" class="form-control"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="password" class="control-label">Contraseña:</label>
+      <div class="controls">
+        <input type="password" name="password" ng-model="login.password" placeholder="Contraseña" size="50" class="form-control"/>
+      </div>
+    </div><br/>
+    <button ng-disabled="login.working" class="btn btn-large btn-primary btn-block"><i class="icon-signin"></i>Entrar</button>
+  </form>
+</div>
