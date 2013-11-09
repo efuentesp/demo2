@@ -26,18 +26,21 @@ angular.module('demo2App', ['ui.router', 'ngCookies']).config(function($statePro
   $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
     console.log(toState);
     console.log("StateChangeStart from: " + fromState.url + " to: " + toState.url);
-    $rootScope.doingResolve = true;
     $rootScope.error = null;
-    if (toState.name === !'login') {
-      if (!auth.authorize(toState.access)) {
-        if (auth.isLoggedIn()) {
-          return $state.go('main');
-        } else {
-          console.log(">> Login");
-          return $state.go('login');
-        }
-      }
+    if (toState.access !== '*:*' && !auth.isLoggedIn()) {
+      event.preventDefault();
+      return $state.transitionTo('login');
     }
+    /*
+    if toState.name is not 'login'
+      if not auth.authorize toState.access
+        if auth.isLoggedIn()
+          $state.go 'main'
+        else
+          console.log ">> Login"
+          $state.go 'login'
+    */
+
   });
   return $rootScope.$on('$stateChangeSuccess', function() {
     $rootScope.doingResolve = false;

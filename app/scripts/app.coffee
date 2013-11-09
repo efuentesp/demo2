@@ -33,8 +33,13 @@ angular.module('demo2App', ['ui.router', 'ngCookies'])
     $rootScope.$on '$stateChangeStart', (event, toState, toParams, fromState, fromParams) ->
       console.log toState
       console.log "StateChangeStart from: " + fromState.url + " to: " + toState.url
-      $rootScope.doingResolve = true
+      #$rootScope.doingResolve = true
       $rootScope.error = null
+      if toState.access isnt '*:*' and not auth.isLoggedIn()
+        event.preventDefault()
+        $state.transitionTo 'login'
+
+      ###
       if toState.name is not 'login'
         if not auth.authorize toState.access
           if auth.isLoggedIn()
@@ -42,6 +47,7 @@ angular.module('demo2App', ['ui.router', 'ngCookies'])
           else
             console.log ">> Login"
             $state.go 'login'
+      ###
 
     $rootScope.$on '$stateChangeSuccess', ->
       $rootScope.doingResolve = false
