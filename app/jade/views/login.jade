@@ -1,0 +1,21 @@
+.container
+  form.form-signin(name="loginForm", role="login", ng-submit="login()")
+
+    h2.form-signin-heading
+      | Login
+
+    .control-group
+      label.control-label(for="username")
+        | Usuario:
+      .controls
+        input.form-control(type="text", name="username", ng-model="login.username", placeholder="Usuario", size="50")
+
+    .control-group
+      label.control-label(for="password")
+        | Contraseña:
+      .controls
+        input.form-control(type="password", name="password", ng-model="login.password", placeholder="Contraseña", size="50")
+    br
+    button.btn.btn-large.btn-primary.btn-block(ng-disabled="login.working")
+      i.icon-signin
+      | Entrar

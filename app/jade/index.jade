@@ -26,8 +26,49 @@ html.no-js
       <script src="bower_components/json3/lib/json3.min.js"></script>
       <![endif]
 
-    // Add your site or application content here
-    div(class="container", ng-view)
+    nav.navbar.navbar-inverse.navbar-fixed-top
+      .navbar-header
+        a.navbar-brand(href="#")
+          | Peacemakers
+      .collapse.navbar-collapse.navbar-ex1-collapse
+        ul.nav.navbar-nav
+          li
+            a(ui-sref="main")
+              |  Inicio
+          li
+            a(ui-sref="school")
+              |  Escuelas
+        ul.nav.navbar-nav.navbar-right
+          li
+            p Usuario
+          li
+            a(ui-sref="login")
+              |  Login
+          li
+            a(ui-sref="logout")
+              |  Logout
+
+    .container
+      .container(ui-view, ng-hide="doingResolve")
+
+      .jumbotron.loading-jumbo(ng-show="doingResolve")
+        h2
+          i.icon-refresh.icon-2x.icon-spin
+            | Cargando...
+
+    .footer.bs-footer(role="contentinfo")
+      .container
+        p
+          | All Rights reserved (C) Peacemakers
+        ul.footer-links
+          li
+            a(href="#")
+              | Bitácora de cambios
+          li.muted
+            | ·
+          li
+            a(href="#")
+              | Reportar un Problema
 
     // Google Analytics: change UA-XXXXX-X to be your site's ID.
     script.
@@ -39,26 +80,30 @@ html.no-js
 
     script(src="bower_components/jquery/jquery.js")
     script(src="bower_components/angular/angular.js")
-
+    script(src="bower_components/angular-ui-router/release/angular-ui-router.js")
+    script(src="bower_components/angular-cookies/angular-cookies.js")
+    script(src="bower_components/ngBase64/ngBase64.min.js")
     
     // build:js scripts/plugins.js 
-    script(src="bower_components/bootstrap-sass/js/bootstrap-affix.js")
-    script(src="bower_components/bootstrap-sass/js/bootstrap-alert.js")
-    script(src="bower_components/bootstrap-sass/js/bootstrap-dropdown.js")
-    script(src="bower_components/bootstrap-sass/js/bootstrap-tooltip.js")
-    script(src="bower_components/bootstrap-sass/js/bootstrap-modal.js")
-    script(src="bower_components/bootstrap-sass/js/bootstrap-transition.js")
-    script(src="bower_components/bootstrap-sass/js/bootstrap-button.js")
-    script(src="bower_components/bootstrap-sass/js/bootstrap-popover.js")
-    script(src="bower_components/bootstrap-sass/js/bootstrap-typeahead.js")
-    script(src="bower_components/bootstrap-sass/js/bootstrap-carousel.js")
-    script(src="bower_components/bootstrap-sass/js/bootstrap-scrollspy.js")
-    script(src="bower_components/bootstrap-sass/js/bootstrap-collapse.js")
-    script(src="bower_components/bootstrap-sass/js/bootstrap-tab.js")
+    script(src="bower_components/bootstrap-sass/js/affix.js")
+    script(src="bower_components/bootstrap-sass/js/alert.js")
+    script(src="bower_components/bootstrap-sass/js/dropdown.js")
+    script(src="bower_components/bootstrap-sass/js/tooltip.js")
+    script(src="bower_components/bootstrap-sass/js/modal.js")
+    script(src="bower_components/bootstrap-sass/js/transition.js")
+    script(src="bower_components/bootstrap-sass/js/button.js")
+    script(src="bower_components/bootstrap-sass/js/popover.js")
+    script(src="bower_components/bootstrap-sass/js/carousel.js")
+    script(src="bower_components/bootstrap-sass/js/scrollspy.js")
+    script(src="bower_components/bootstrap-sass/js/collapse.js")
+    script(src="bower_components/bootstrap-sass/js/tab.js")
     // endbuild
     
     // build:js({.tmp,app}) scripts/scripts.js 
     script(src="scripts/app.js")
     script(src="scripts/controllers/main.js")
+    script(src="scripts/controllers/login.js")
+    script(src="scripts/controllers/school.js")
+    script(src="scripts/services/auth.js")
     // endbuild
     //- build:body

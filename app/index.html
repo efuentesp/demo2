@@ -22,19 +22,38 @@
     <script src="bower_components/es5-shim/es5-shim.js"></script>
     <script src="bower_components/json3/lib/json3.min.js"></script>
     <![endif]-->
-
-
-    <!-- Add your site or application content here-->
-    <a ui-sref="main">Main</a>
-    <a ui-sref="login">Login</a>
-    <a ui-sref="school">School</a>
-
-    <div class="container" ui-view ng-hide="doingResolve"></div>
-
-    <div class="jumbotron loading-jumbo" ng-show="doingResolve">
-        <h2><i class="icon-refresh icon-2x icon-spin"></i> Cargando...</h2>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-header"><a href="#" class="navbar-brand">Peacemakers</a></div>
+      <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <ul class="nav navbar-nav">
+          <li><a ui-sref="main"> Inicio</a></li>
+          <li><a ui-sref="school"> Escuelas</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li>
+            <p>Usuario</p>
+          </li>
+          <li><a ui-sref="login"> Login</a></li>
+          <li><a ui-sref="logout"> Logout</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="container">
+      <div ui-view ng-hide="doingResolve" class="container"></div>
+      <div ng-show="doingResolve" class="jumbotron loading-jumbo">
+        <h2><i class="icon-refresh icon-2x icon-spin">Cargando...</i></h2>
+      </div>
     </div>
-
+    <div role="contentinfo" class="footer bs-footer">
+      <div class="container">
+        <p>All Rights reserved (C) Peacemakers</p>
+        <ul class="footer-links">
+          <li><a href="#">Bitácora de cambios</a></li>
+          <li class="muted">·</li>
+          <li><a href="#">Reportar un Problema</a></li>
+        </ul>
+      </div>
+    </div>
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID.-->
     <script>
       var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
@@ -48,7 +67,7 @@
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
     <script src="bower_components/angular-cookies/angular-cookies.js"></script>
-
+    <script src="bower_components/ngBase64/ngBase64.min.js"></script>
     <!-- build:js scripts/plugins.js -->
     <script src="bower_components/bootstrap-sass/js/affix.js"></script>
     <script src="bower_components/bootstrap-sass/js/alert.js"></script>
